@@ -3,7 +3,7 @@ name: Prevent Temporary Commits
 on:
   pull_request:
     branches:
-      - "main"
+      - main
 
 jobs:
   prevent_fixups_commits:
@@ -13,12 +13,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Check for fixup commits
+        with:
+          fetch-depth: 20
+      - name: Prevent for fixup commits
         run: |
-          if git log --pretty=format:"%s" | grep -q "fixup!"; then
+          if git log -20 --oneline --grep="^fixup! "; then
             echo "Fixup commits found. Please rebase your branch to remove them."
             exit 1
           else
             echo "No fixup commits found."
           fi
+  
