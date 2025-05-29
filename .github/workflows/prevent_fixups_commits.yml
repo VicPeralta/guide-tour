@@ -17,10 +17,13 @@ jobs:
           fetch-depth: 20
       - name: Prevent for fixup commits
         run: |
-          if git log -20 --oneline --grep="^fixup! "; then
-            echo "Fixup commits found. Please rebase your branch to remove them."
-            exit 1
-          else
+          fixup_commits=$(git log --oneline --grep="^fixup! ")
+          if [ -z "$fixup_commits" ]; then
             echo "No fixup commits found."
+          else
+            echo "Fixup commits found:"
+            echo "$fixup_commits"
+            echo "Please rebase your branch to remove fixup commits before merging."
+            exit 1
           fi
   
