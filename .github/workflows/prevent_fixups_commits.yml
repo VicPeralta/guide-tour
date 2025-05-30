@@ -1,4 +1,4 @@
-name: Prevent Fixup Commits
+name: Prevent Fixup Commits on Main
 
 on:
   pull_request:
@@ -16,7 +16,9 @@ jobs:
       - name: Prevent for fixup commits
         run: |
           git fetch origin main
-          fixup_commits=$(git log main..HEAD --oneline --grep="^fixup! ")
+          # Check if the current branch has any fixup commits
+          BASE_SHA=$(git merge-base origin/main HEAD)
+          fixup_commits=$(git log $BASE_SHA..HEAD --oneline --grep="^fixup! ")
           if [ -z "$fixup_commits" ]; then
             echo "No fixup commits found."
           else
