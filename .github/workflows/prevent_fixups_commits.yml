@@ -1,4 +1,4 @@
-name: Prevent Temporary Commits
+name: Prevent Fixup Commits
 
 on:
   pull_request:
@@ -13,14 +13,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 20
       - name: Prevent for fixup commits
         run: |
           git fetch origin main
-          # Check if the current branch has any fixup commits
-          BASE_SHA=$(git merge-base origin/main HEAD)
-          fixup_commits=$(git log $BASE_SHA..HEAD --oneline --grep="^fixup! ")
+          fixup_commits=$(git log main..HEAD --oneline --grep="^fixup! ")
           if [ -z "$fixup_commits" ]; then
             echo "No fixup commits found."
           else
