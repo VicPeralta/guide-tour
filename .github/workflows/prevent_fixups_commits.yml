@@ -17,7 +17,8 @@ jobs:
           fetch-depth: 20
       - name: Prevent for fixup commits
         run: |
-          git fetch
+          git fetch origin main
+          # Check if the current branch has any fixup commits
           BASE_SHA=$(git merge-base origin/main HEAD)
           fixup_commits=$(git log $BASE_SHA..HEAD --oneline --grep="^fixup! ")
           if [ -z "$fixup_commits" ]; then
